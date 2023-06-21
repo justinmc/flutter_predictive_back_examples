@@ -61,7 +61,7 @@ class _MyAppState extends State<_MyApp> {
 
   void _routerChanged() {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      SystemNavigator.updateNavigationStackStatus(_router.canPop());
+      SystemNavigator.setFrameworkHandlesBack(_router.canPop());
     });
   }
 

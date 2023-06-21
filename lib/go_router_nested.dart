@@ -132,10 +132,10 @@ class _NestedGoRoutersPageState extends State<_NestedGoRoutersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CanPopScope(
+    return PopScope(
       popEnabled: _popEnabled,
-      onPop: () {
-        if (_popEnabled) {
+      onPopped: (bool success) {
+        if (success) {
           return;
         }
         _router.pop();
@@ -184,4 +184,3 @@ class _LinksPage extends StatelessWidget {
     );
   }
 }
-
