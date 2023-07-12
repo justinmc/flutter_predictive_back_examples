@@ -157,8 +157,6 @@ class _BottomNavTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(justinmc): Try NavigatorPopHandler here? Though it seems to have
-    // lifecycle problems when used with the pages API...
     return PopScope(
       canPop: _canPop,
       onPopInvoked: (bool didPop) {

@@ -31,9 +31,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: PopScope(
-        popEnabled: _popEnabled,
-        onPopped: (bool success) {
-          if (success) {
+        canPop: _popEnabled,
+        onPopInvoked: (bool didPop) {
+          if (didPop) {
             return;
           }
           setState(() {
@@ -133,8 +133,9 @@ class _LinksPage extends StatelessWidget {
                 child: const Text('Go back'),
               ),
             if (popEnabled != null)
+              // This doesn't seem to work, but neither does it work on master with WillPopScopes.
               PopScope(
-                popEnabled: popEnabled!,
+                canPop: popEnabled!,
                 child: const SizedBox.shrink(),
               ),
           ],
