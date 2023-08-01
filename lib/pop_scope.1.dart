@@ -140,7 +140,7 @@ class _BottomNavPageState extends State<_BottomNavPage> {
 }
 
 class _BottomNavTab extends StatelessWidget {
-  const _BottomNavTab({
+  _BottomNavTab({
     super.key,
     required this.color,
     required this.onChangedPages,
@@ -152,8 +152,13 @@ class _BottomNavTab extends StatelessWidget {
   final _TabPageCallback onChangedPages;
   final List<_TabPage> pages;
   final String title;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  bool get _canPop => pages.length <= 1;
+  bool get _canPop {
+    final NavigatorState? navigatorState = _navigatorKey.currentState;
+    final bool canPop = navigatorState?.canPop() ?? false;
+    return canPop || pages.isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +173,7 @@ class _BottomNavTab extends StatelessWidget {
         ]..removeLast());
       },
       child: Navigator(
+        key: _navigatorKey,
         onPopPage: (Route<void> route, void result) {
           if (!route.didPop(null)) {
             return false;

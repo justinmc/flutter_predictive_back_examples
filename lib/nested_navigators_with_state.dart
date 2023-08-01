@@ -67,10 +67,10 @@ class _NestedNavigatorsPageState extends State<NestedNavigatorsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CanPopScope(
-      popEnabled: popEnabled,
-      onPop: () {
-        if (popEnabled) {
+    return PopScope(
+      canPop: popEnabled,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
           return;
         }
         final NavigatorState nestedNavigatorState = nestedNavigatorKey.currentState as NavigatorState;
