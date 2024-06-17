@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// This sample demonstrates using CanPopScope to get the correct behavior from
-// system back gestures when using the Navigator 2.0 API.
+// This sample demonstrates using PopScope to make Android system back gestures
+// work with the Navigator.pages API.
 
 import 'package:flutter/material.dart';
 
@@ -25,30 +25,27 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final List<_Page> _pages = <_Page>[_Page.home];
 
-  bool get _popEnabled => _pages.length <= 1;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+          },
+        ),
+      ),
+      // This PopScope controls the root Navigator (in MaterialApp above). It
+      // should only allow popping when exiting the app. Otherwise, the nested
+      // Navigator below should handle pops.
       home: PopScope(
-        canPop: _popEnabled,
-        onPopInvoked: (bool didPop) {
-          if (didPop) {
-            return;
-          }
-          setState(() {
-            _pages.removeLast();
-          });
-        },
+        canPop: _pages.length <= 1,
         child: Navigator(
-          onPopPage: (Route<void> route, void result) {
-            if (!route.didPop(null)) {
-              return false;
-            }
+          onDidRemovePage: (Page<void>? page) {
             setState(() {
               _pages.removeLast();
             });
-            return true;
           },
           pages: _pages.map((_Page page) {
             switch (page) {
@@ -106,13 +103,11 @@ class _LinksPage extends StatelessWidget {
     this.buttons = const <Widget>[],
     this.popEnabled,
     required this.title,
-    this.onBack,
   });
 
   final Color backgroundColor;
   final List<Widget> buttons;
   final bool? popEnabled;
-  final VoidCallback? onBack;
   final String title;
 
   @override
@@ -127,13 +122,13 @@ class _LinksPage extends StatelessWidget {
             ...buttons,
             if (Navigator.of(context).canPop())
               TextButton(
-                onPressed: onBack ?? () {
+                onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: const Text('Go back'),
               ),
             if (popEnabled != null)
-              // This doesn't seem to work, but neither does it work on master with WillPopScopes.
+              // This PopScope controls popping in the nested Navigator.
               PopScope(
                 canPop: popEnabled!,
                 child: const SizedBox.shrink(),
