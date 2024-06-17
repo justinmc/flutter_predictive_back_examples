@@ -23,6 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey _navigatorKey = GlobalKey();
   final List<_Page> _pages = <_Page>[_Page.home];
 
   @override
@@ -41,7 +42,16 @@ class _MyAppState extends State<MyApp> {
       // Navigator below should handle pops.
       home: PopScope(
         canPop: _pages.length <= 1,
+        onPopInvokedWithResult: (bool didPop, dynamic result) {
+          if (didPop) {
+            return;
+          }
+          // This handles back gestures and physical back button presses.
+          final NavigatorState? navigatorState = _navigatorKey.currentState as NavigatorState?;
+          navigatorState?.maybePop();
+        },
         child: Navigator(
+          key: _navigatorKey,
           onDidRemovePage: (Page<void>? page) {
             setState(() {
               _pages.removeLast();
